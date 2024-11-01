@@ -5,17 +5,18 @@ import os
 import sys
 import numpy as np
 import pandas as pd
-import pickle
+import dill
 from src.exception import CustomException
-from logger import logging
-from src.components.data_transformation import DataTransformationConfig
+from src.logger import logging
+
 
 def save_object(file_path,obj):
     try:
         ##Directory where our preprocessor object will be stored
         dir_path=os.path.dirname(file_path)
         os.makedirs(dir_path, exist_ok=True)
-        pickle.dump(obj,open(dir_path,'wb'))
+        with open(file_path,'wb') as file_obj:
+            dill.dump(obj,file_obj)
         logging.info('Preporcessor Pipeline Saved Successfully')
 
     except Exception as e:

@@ -11,7 +11,6 @@ from src.exception import CustomException
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
-from src.components import data_transformation
 from src.components.data_transformation import DataTransformation
 from src.components.data_transformation import DataTransformationConfig
 
@@ -61,7 +60,7 @@ class DataInjestion:
 
             logging.info("Initiating Train-test-Split by splitting data into 80-20")
             ## keeping the distribution of data same for two schools
-            train,test=train_test_split(df,test_size=0.2,stratify='Subject',random_state=42)
+            train,test=train_test_split(df,test_size=0.2,stratify=df['Subject'],random_state=42)
             train.to_csv(self.injestion_config.train_data_path,index=False,header=True)
             logging.info("Injested the Training data Successfully!")
 

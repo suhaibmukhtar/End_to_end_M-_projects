@@ -4,7 +4,6 @@ The Data Injestion phase is responsible for loading/reading the data from variou
 as local datasources like csv, excel,json etc. This step brings the identified and selected data
 for the problem into the python environment.
 """
-import src
 import os
 import sys
 from src.logger import logging
@@ -12,6 +11,10 @@ from src.exception import CustomException
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+from src.components import data_transformation
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
+
 
 ## creating the class which contains details about where to stored train,test and raw data
 #data class is used when we have to create class variables and not methods 
@@ -64,11 +67,19 @@ class DataInjestion:
 
             test.to_csv(self.injestion_config.test_data_path,index=False,header=True)
             logging.info("Injested the Test dataset Successfully!")
+            
+            # This information is required during data transformation
+            return(
+                self.injestion_config.train_data_path,
+                self.injestion_config.test_data_path
+            )
 
-        except:
-            pass
-
+        except Exception as e:
+            raise CustomException(e,sys)
+            
 if __name__=="__main__":
-    ai=DataInjestion()
-    ai.initiate_data_injestion()
-    print(ai.injestion_config.raw_data_path)
+    obj=DataInjestion()
+    train_data,test_data=obj.initiate_data_injestion()
+
+    data_transformation=DataTransformation()
+    data_transformation.initiate_data_transformation(train_data,test_data)
